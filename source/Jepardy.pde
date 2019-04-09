@@ -9,17 +9,10 @@ int mode = 0;
 class question {
   int points;
   String quest,anwser;
-  boolean isOld = false; // not used
   question(int p,String q,String a) {
     points = p;
     quest = q;
     anwser = a;
-  }
-  void use() { // not used (buggy)
-    isOld = true;
-  }
-  void reset() { // not used (buggy)
-    isOld = false;
   }
 }
 
@@ -37,7 +30,6 @@ class category {
     }
     Temp[quests.length] = q;
     quests = Temp;
-    
   }
   void pullQuestion(int pnts) {
     // get all questions with set points
@@ -62,8 +54,7 @@ class category {
   }
 }
 
-category[] categories = {
-};
+category[] categories = {};
 
 question current = null;
 
@@ -87,19 +78,17 @@ void draw() {
 void displayCategories() {
   float sclx = (width/(categories.length));
   float scly = (height/(number_of_prizes+1));
-  for (int x = 0; x < categories.length; x++) {
+  for (int x = 0; x < categories.length; x++) { // transfered some other code from a similar loop to save run time
+    fill(25,0,158);
+    rect(sclx*x,0,sclx*(x+1),scly);
+    fill(0);
+    text(categories[x].name,((sclx*x)+(sclx*(x+1)))/2,scly/2); // I will clean this up later
     for (int y = 1; y < number_of_prizes+1; y++) {
       fill(25,0,100);
       rect(sclx*x,scly*y,sclx*(x+1),scly*(y+1));
       fill(0);
       text(y*100,((sclx*x)+(sclx*(x+1)))/2,((scly*y)+(scly*(y+1)))/2); // I will clean this up later
     }
-  }
-  for (int x = 0; x < categories.length; x++) {
-    fill(25,0,158);
-    rect(sclx*x,0,sclx*(x+1),scly);
-    fill(0);
-    text(categories[x].name,((sclx*x)+(sclx*(x+1)))/2,scly/2); // I will clean this up later
   }
 }
 
@@ -124,7 +113,7 @@ void mousePressed() {// Ultra-Fast Click Detection™ (Patent Pending)
     cat = (int)(mouseX/sclx); // category
     pnt = (int)(mouseY/scly)-1; // point level
    
-    println(cat,pnt); // bug checking
+    // println(cat,pnt); // bug checking
     
     if (pnt != -1) {
       mode = 1;
