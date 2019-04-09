@@ -31,22 +31,17 @@ class category {
     Temp[quests.length] = q;
     quests = Temp;
   }
-  void pullQuestion(int pnts) {
+  void pullQuestion(int pnts) { // re-writen to take less time and space
     // get all questions with set points
-    int leng = 0;
+    int[] hits = {};
     for (int i = 0; i < quests.length; i++) {
       if (quests[i].points == pnts)
-        leng++;
+        hits = append(hits,i);
     }
-    question[] Temp = new question[leng];
+    question[] Temp = new question[hits.length];
     int index = 0;
-    for (int i = 0; i < quests.length; i++) {
-      if (quests[i].points == pnts) {
-        Temp[index] = quests[i];
-        index++;
-        if (index == Temp.length) // when done transfering all important data, stop (to save time)
-          break;
-      }
+    for (int i = 0; i < hits.length; i++) {
+      Temp[i] = quests[hits[i]];
     }
     int loc = round(random(Temp.length-1)); // randomly choose a valid question
     // repeats are possable and unavoidable (I think)
@@ -93,14 +88,12 @@ void displayCategories() {
 }
 
 void displayProblem() { // displays the current question chosen
-  fill(25,0,100);
-  rect(0,0,width,height);
+  background(25,0,100);
   fill(0);
   text(current.quest,width/2,height/2); 
 }
 void displayAnwser() { // displays the current question's anwser
-  fill(25,0,100);
-  rect(0,0,width,height);
+  background(25,0,100);
   fill(0);
   text(current.anwser,width/2,height/2);
 }
