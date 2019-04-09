@@ -6,6 +6,8 @@ int cat = -1;
 int pnt = -1;
 int mode = 0;
 
+float sclx,scly;
+
 class question {
   int points;
   String quest,anwser;
@@ -39,7 +41,6 @@ class category {
         hits = append(hits,i);
     }
     question[] Temp = new question[hits.length];
-    int index = 0;
     for (int i = 0; i < hits.length; i++) {
       Temp[i] = quests[hits[i]];
     }
@@ -59,9 +60,12 @@ void setup() {
   textAlign(CENTER);
   textSize(50);
   parseFile(); // extract all of the data from the file
+  sclx = (width/(categories.length));
+  scly = (height/(number_of_prizes+1));
 }
 
 void draw() {
+  background(25,0,100);
   if (mode == 0)
     displayCategories();
   else if (mode == 1)
@@ -71,38 +75,31 @@ void draw() {
 }
 
 void displayCategories() {
-  float sclx = (width/(categories.length));
-  float scly = (height/(number_of_prizes+1));
+  fill(25,0,158);
+  rect(0,0,width,scly);
   for (int x = 0; x < categories.length; x++) { // transfered some other code from a similar loop to save run time
-    fill(25,0,158);
-    rect(sclx*x,0,sclx*(x+1),scly);
-    fill(0);
-    text(categories[x].name,((sclx*x)+(sclx*(x+1)))/2,scly/2); // I will clean this up later
+    float xpos = ((sclx*x)+(sclx*(x+1)))/2; // I will clean this up later
     for (int y = 1; y < number_of_prizes+1; y++) {
-      fill(25,0,100);
-      rect(sclx*x,scly*y,sclx*(x+1),scly*(y+1));
       fill(0);
-      text(y*100,((sclx*x)+(sclx*(x+1)))/2,((scly*y)+(scly*(y+1)))/2); // I will clean this up later
+      text(y*100,xpos,((scly*y)+(scly*(y+1)))/2);
+      line(0,scly*(y+1),width,scly*(y+1));
     }
+    text(categories[x].name,xpos,scly/2);
+    line(sclx*(x+1),0,sclx*(x+1),height);
   }
 }
 
 void displayProblem() { // displays the current question chosen
-  background(25,0,100);
   fill(0);
   text(current.quest,width/2,height/2); 
 }
 void displayAnwser() { // displays the current question's anwser
-  background(25,0,100);
   fill(0);
   text(current.anwser,width/2,height/2);
 }
 
 void mousePressed() {// Ultra-Fast Click Detection™ (Patent Pending)
   if (mode == 0) {
-    float sclx = (width/(categories.length));
-    float scly = (height/(number_of_prizes+1));
-  
     cat = (int)(mouseX/sclx); // category
     pnt = (int)(mouseY/scly)-1; // point level
    
@@ -113,10 +110,10 @@ void mousePressed() {// Ultra-Fast Click Detection™ (Patent Pending)
       category c = categories[cat]; // grabs the current category
       c.pullQuestion(pnt); // randomly choses a question from a point "pool"
     }
-  } else if (mode == 1)
-    mode = 2;
-  else if (mode == 2)
-    mode = 0;
+  } else {
+    mode++;
+    mode%=3;
+  }
 }
 
 void parseFile() { // IO
