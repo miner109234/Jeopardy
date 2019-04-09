@@ -9,16 +9,16 @@ int mode = 0;
 class question {
   int points;
   String quest,anwser;
-  boolean isOld = false;
+  boolean isOld = false; // not used
   question(int p,String q,String a) {
     points = p;
     quest = q;
     anwser = a;
   }
-  void use() {
+  void use() { // not used (buggy)
     isOld = true;
   }
-  void reset() {
+  void reset() { // not used (buggy)
     isOld = false;
   }
 }
@@ -52,12 +52,12 @@ class category {
       if (quests[i].points == pnts) {
         Temp[index] = quests[i];
         index++;
-        if (index == Temp.length)
+        if (index == Temp.length) // when done transfering all important data, stop (to save time)
           break;
       }
     }
-    int loc = round(random(Temp.length-1));
-    // repeats are possable and unavoidable
+    int loc = round(random(Temp.length-1)); // randomly choose a valid question
+    // repeats are possable and unavoidable (I think)
     current = Temp[loc];
   }
 }
@@ -68,11 +68,11 @@ category[] categories = {
 question current = null;
 
 void setup() {
-  fullScreen();
-  rectMode(CORNERS);
+  fullScreen(); // fullScreen the canvas
+  rectMode(CORNERS); // initalize some characteristics
   textAlign(CENTER);
   textSize(50);
-  parseFile();
+  parseFile(); // extract all of the data from the file
 }
 
 void draw() {
@@ -92,24 +92,24 @@ void displayCategories() {
       fill(25,0,100);
       rect(sclx*x,scly*y,sclx*(x+1),scly*(y+1));
       fill(0);
-      text(y*100,((sclx*x)+(sclx*(x+1)))/2,((scly*y)+(scly*(y+1)))/2);
+      text(y*100,((sclx*x)+(sclx*(x+1)))/2,((scly*y)+(scly*(y+1)))/2); // I will clean this up later
     }
   }
   for (int x = 0; x < categories.length; x++) {
     fill(25,0,158);
     rect(sclx*x,0,sclx*(x+1),scly);
     fill(0);
-    text(categories[x].name,((sclx*x)+(sclx*(x+1)))/2,scly/2);
+    text(categories[x].name,((sclx*x)+(sclx*(x+1)))/2,scly/2); // I will clean this up later
   }
 }
 
-void displayProblem() {
+void displayProblem() { // displays the current question chosen
   fill(25,0,100);
   rect(0,0,width,height);
   fill(0);
-  text(current.quest,width/2,height/2);
+  text(current.quest,width/2,height/2); 
 }
-void displayAnwser() {
+void displayAnwser() { // displays the current question's anwser
   fill(25,0,100);
   rect(0,0,width,height);
   fill(0);
@@ -128,8 +128,8 @@ void mousePressed() {// Ultra-Fast Click Detection™ (Patent Pending)
     
     if (pnt != -1) {
       mode = 1;
-      category c = categories[cat];
-      c.pullQuestion(pnt);
+      category c = categories[cat]; // grabs the current category
+      c.pullQuestion(pnt); // randomly choses a question from a point "pool"
     }
   } else if (mode == 1)
     mode = 2;
@@ -138,16 +138,16 @@ void mousePressed() {// Ultra-Fast Click Detection™ (Patent Pending)
 }
 
 void parseFile() { // IO
-  BufferedReader reader = createReader("Jeopardy.txt");
+  BufferedReader reader = createReader("Jeopardy.txt"); // reads the file "Jeopardy.txt"
   String line = null;
-  int linenumb = 1;
+  int linenumb = 1; // for bug checker
   try {
     while ((line = reader.readLine()) != null) {
       String[] temp = line.split(" ");
       String id = (String)(temp[0].toLowerCase());
-      if (id.equals("points_per_category"))
+      if (id.equals("points_per_category")) // needed (I think) so we can have the correct number of rows displayed
         number_of_prizes = int(temp[1]);
-      else if (id.equals("c")) {
+      else if (id.equals("c")) { // if you want to add a category
         // dumb workaround
         category[] Temp = new category[categories.length+1];
         for (int i = 0; i < categories.length; i++) {
@@ -160,7 +160,7 @@ void parseFile() { // IO
         }
         Temp[categories.length] = new category(join(name," "));
         categories = Temp;
-      } else if (id.equals("q")) {
+      } else if (id.equals("q")) { // if you want to add a question
         // add support for spaces in text
         int loc = 0;
         for (int i = 0; i < temp.length; i++) {
@@ -176,7 +176,7 @@ void parseFile() { // IO
           a = append(a,temp[i]);
         }
         categories[int(temp[1])].addQuestion(new question(int(temp[2]),join(q," "),join(a," ")));
-      } else
+      } else // if you try to call a command that doesn't exist, throw an argument error
         throw new IllegalArgumentException("Unexpected identifier \""+temp[0]+"\" at "+linenumb);
       linenumb++;
     }
